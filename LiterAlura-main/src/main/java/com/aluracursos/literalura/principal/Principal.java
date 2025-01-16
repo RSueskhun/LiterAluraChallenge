@@ -296,16 +296,16 @@ public class Principal {
         var menuIdiomas = """
                 LIBROS POR IDIOMA
                 -------------------------------------------------------
-                es - Español                it - Italiano
-                en - Inglés                 ja - Japonés
-                fr - Francés                pt - Portugués
-                ru - Ruso                   zh - Chino Mandarín
-                de - Alemán                 ar - Árabe
+                es - ESPAÑOL                it - ITALIANO
+                en - INGLES                 ja - JAPONES
+                fr - FRANCES                pt - PORTUGUES
+                ru - RUSO                   zh - CHINO
+                de - ALEMAN                 ar - ARABE
                 """;
         String idiomaLibro;
         do {
             System.out.println(menuIdiomas);
-            System.out.print("Ingresa el código del idioma del Libro a buscar [2 letras, ej: es]: ");
+            System.out.print("INGRESE LAS INICIALES DEL IDIOMA PARA FILTRAR: ");
             idiomaLibro = sc.nextLine().toLowerCase();
 
             // Validar que el idioma ingresado tenga dos letras y no incluya números
