@@ -1,11 +1,12 @@
 package com.aluracursos.literalura.model;
 
 import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name ="autores")
+@Table(name = "autores")
 public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +18,10 @@ public class Autor {
     @ManyToMany(mappedBy = "autores", fetch = FetchType.LAZY)
     private List<Libro> librosDelAutor = new ArrayList<>();
 
-    public Autor() {};
+    public Autor() {
+    }
+
+    ;
 
     public Autor(AutorDB autorDB) {
         this.nombre = autorDB.nombre();
@@ -64,13 +68,12 @@ public class Autor {
     @Override
     public String toString() {
         return """
-               **************************************************
-               *                      AUTOR                     *
-               **************************************************
-               Autor: %s
-               Fecha de Nacimiento: %s
-               Fecha de Fallecimiento: %s
-               Libros: %s
-               """.formatted(nombre, fechaNacimiento, fechaFallecimiento, librosDelAutor) + "\n";
+                       AUTOR
+                       ---------------------------------------------------------------
+                       AUTOR: %s
+                       FECHA DE NACIMIENTO: %s
+                       FECHA DE MUERTE: %s
+                       LIBROS DE SU AUTORIA: %s
+                       """.formatted(nombre, fechaNacimiento, fechaFallecimiento, librosDelAutor) + "\n";
     }
 }

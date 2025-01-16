@@ -29,7 +29,10 @@ public class Libro {
     )
     private List<Autor> autores = new ArrayList<>();
 
-    public Libro() {};
+    public Libro() {
+    }
+
+    ;
 
     public Libro(LibrosDB librosDB) {
         this.titulo = librosDB.titulo();
@@ -77,9 +80,9 @@ public class Libro {
     public String toString() {
         return """
                 ______________________________________________________________________________________
-                Título: %s
-                Autor: %s
-                Idioma: %s
-                N° Descargas: %f""".formatted(titulo, autores, idiomas, numeroDeDescargas);// + "\n";
+                TITULO: %s
+                AUTOR: %s
+                IDIOMA: %s
+                TOTAL DESCARGAS: %f""".formatted(titulo, autores, idiomas, numeroDeDescargas);// + "\n";
     }
 }

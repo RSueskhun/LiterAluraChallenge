@@ -13,21 +13,20 @@ import java.util.Optional;
 public interface AutorRepository extends JpaRepository<Autor, Long> {
     Optional<Autor> findByNombre(String nombre);
 
-    // 2 Formas de evitar excepción >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     @Query("SELECT a FROM Autor a LEFT JOIN FETCH a.librosDelAutor")
     List<Autor> findAllWithLibros();
 
-//    @EntityGraph(attributePaths = "librosDelAutor")
-//    List<Autor> findAll();
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-    @EntityGraph(attributePaths = "librosDelAutor")// Hibernate intenta cargar de manera diferida (lazy loading) la lista de libros de cada autor (librosDelAutor), pero al no tener una sesión activa, falla al intentar inicializar la colección, esto es para permitir cargar de forma inmediata las relaciones especificadas sin requerir una sesión abierta
-    List<Autor> findByFechaNacimientoBeforeAndFechaFallecimientoAfterOrFechaFallecimientoIsNullAndFechaNacimientoIsNotNull(String fechaNacimiento, String fechaFallecimiento);
+    @EntityGraph(attributePaths = "librosDelAutor")
+
+    List<Autor> findByFechaNacimientoBeforeAndFechaFallecimientoAfterOrFechaFallecimientoIsNullAndFechaNacimientoIsNotNull(
+            String fechaNacimiento,
+            String fechaFallecimiento);
 
     @EntityGraph(attributePaths = "librosDelAutor")
     List<Autor> findByNombreContainingIgnoreCase(String nombre);
 
     @EntityGraph(attributePaths = "librosDelAutor")
-    List<Autor> findByFechaNacimientoBetween(String inicio, String fin );
+    List<Autor> findByFechaNacimientoBetween(String inicio, String fin);
 
 }

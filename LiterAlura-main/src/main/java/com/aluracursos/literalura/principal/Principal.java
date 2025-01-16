@@ -28,6 +28,7 @@ public class Principal {
         this.autorRepository = autorRepository;
     }
 
+    //MENU
     public void muestraElMenu() {
         var opcion = -1;
 
@@ -88,9 +89,9 @@ public class Principal {
 
                 case 0:
                     System.out.println("""
-                    --------------------------------------------------
-                    GRACIAS POR USAR NUESTRO SISTEMA
-                    """);
+                            --------------------------------------------------
+                            GRACIAS POR USAR NUESTRO SISTEMA
+                            """);
                     break;
                 default:
                     System.out.println("SELECCION INVALIDA");
@@ -100,7 +101,6 @@ public class Principal {
     }
 
 
-    // Encuentra el primer título con el que se busca
     private void buscarLibroPorTitulo() {
         LibrosDB librosDB = getDatosLibros();
 
@@ -113,7 +113,7 @@ public class Principal {
             return;
         }
 
-        // Verificar si el libro ya existe en la base de datos
+        // VERIFICACION LIBRO EXISTENTE
         Optional<Libro> libroExistente = libroRepository.findByTitulo(librosDB.titulo());
         if (libroExistente.isPresent()) {
             System.out.println("""
@@ -121,8 +121,7 @@ public class Principal {
                     LIBRO YA EXISTE EN LA BASE DE DATOS
                     """);
 
-            // El libro existe en la base de datos y lo muestro:
-            // Crear y mostrar DTO del libro guardado
+            //INFORMACION LIBRO EXISTENTE
             LibroDatos libroDatos = new LibroDatos(
                     libroExistente.get().getId(),
                     libroExistente.get().getTitulo(),
@@ -132,14 +131,14 @@ public class Principal {
                     libroExistente.get().getNumeroDeDescargas()
             );
 
-            // Imprimir detalles del libro ya registrado
+          //DETALLES LIBRO REGISTRADO
             System.out.printf(
                     """
                             -------------------TITULO-------------------
-                            Título: %s
-                            Autor: %s
-                            Idioma: %s
-                            N° Descargas: %.2f%n""", libroDatos.titulo(),
+                            TITULO: %s
+                            AUTOR: %s
+                            IDIOMA: %s
+                            TOTAL DESCARGAS: %.2f%n""", libroDatos.titulo(),
                     libroDatos.autores().stream().map(AutorDatos::nombre).collect(Collectors.joining(", ")),
                     libroDatos.idiomas(),
                     libroDatos.numeroDeDescargas()
@@ -149,7 +148,7 @@ public class Principal {
             return;
         }
 
-        // Si el libro existe procesamos los autores
+        //INFORMACION DE AUTORES
         List<Autor> autores = librosDB.autor().stream()
                 .map(datosAutor -> autorRepository.findByNombre(datosAutor.nombre())
                         .orElseGet(() -> {
@@ -163,30 +162,27 @@ public class Principal {
                         })
                 ).collect(Collectors.toList());
 
-        // Crear el libro con los datos de librosDB y añadir los autores
+        //CREAR LIBRO Y AÑADIR DATOS
         Libro libro = new Libro(librosDB);
         libro.setAutores(autores);
-        // Guardar el libro junto con sus autores en la base de datos
         libroRepository.save(libro);
 
-        // Crear y mostrar DTO del libro guardado
         LibroDatos libroDatos = new LibroDatos(
                 libro.getId(),
                 libro.getTitulo(),
                 libro.getAutores().stream().map(autor -> new AutorDatos(autor.getId(), autor.getNombre(), autor.getFechaNacimiento(), autor.getFechaFallecimiento()))
                         .collect(Collectors.toList()),
                 String.join(", ", libro.getIdiomas()),
-                libro.getNumeroDeDescargas()
-        );
+                libro.getNumeroDeDescargas());
 
-        // Imprimir detalles del libro registrado
+        //MOSTRAR INFORMACION LIBRO
         System.out.printf(
                 """
                         -------------------TITULO-------------------
-                        Título: %s
-                        Autor: %s
-                        Idioma: %s
-                        N° Descargas: %.2f%n""", libroDatos.titulo(),
+                        TITULO: %s
+                        AAUTOR: %s
+                        IDIOMA: %s
+                        TOTAL DESCARGAS: %.2f%n""", libroDatos.titulo(),
                 libroDatos.autores().stream().map(AutorDatos::nombre).collect(Collectors.joining(", ")),
                 libroDatos.idiomas(),
                 libroDatos.numeroDeDescargas()
@@ -198,12 +194,14 @@ public class Principal {
     private LibrosDB getDatosLibros() {
         System.out.print("INGRESE EL NOMBRE DEL LIBRO A BUSCAR: ");
         var nombreLibro = sc.nextLine();
-        // Buscar libro en la API
+
+        // BUSCAR LIBRO CONSUMIENDO LA API
         String json = consumoAPI.obtenerDatosLibros(URL_BASE + "?search=" + nombreLibro.replace(" ", "+")); // me trae un json
-        // Convierto json a un objeto Java
+
+        // CONVERSION JSON - JAVA
         var datosBusqueda = conversor.obtenerDatos(json, Datos.class);
 
-        // Encontrar el primer libro coincidente en la lista de resultados
+        //RESULTADO
         return datosBusqueda.listaResultados().stream()
                 .filter(librosDB -> librosDB.titulo().toUpperCase().contains(nombreLibro.toUpperCase()))
                 .findFirst()
@@ -211,8 +209,7 @@ public class Principal {
     }
 
     private void listarLibrosRegistrados() {
-        libros = libroRepository.findAllWithAutores(); // uso una de las dos formas del LibroRepository
-//        libros = libroRepository.findAll();
+        libros = libroRepository.findAllWithAutores();
 
         if (libros.isEmpty()) {
             System.out.println("""
@@ -232,13 +229,12 @@ public class Principal {
 
     private void listarAutoresRegistrados() {
         autores = autorRepository.findAllWithLibros();
-//        autores = autorRepository.findAll();
 
         if (autores.isEmpty()) {
             System.out.println("""
-                __________________________________________________
-                NO HAY AUTORES REGISTRADOS EN EL SISTEMA
-                __________________________________________________%n""");
+                    __________________________________________________
+                    NO HAY AUTORES REGISTRADOS EN EL SISTEMA
+                    __________________________________________________%n""");
             pausa();
             return;
         }
@@ -256,9 +252,7 @@ public class Principal {
         do {
             System.out.print("INGRESE EL AÑO EN EL QUE DESEA BUSCAR: ");
             anioEstaVivo = sc.nextLine();
-
-            // Validar que el año ingresado tenga 4 dígitos numéricos
-            if (!validarAnio4Digitos(anioEstaVivo)) {
+           if (!validarAnio4Digitos(anioEstaVivo)) {
                 anioNoValido();
                 continue;
             }
@@ -267,10 +261,10 @@ public class Principal {
 
         int anio = Integer.parseInt(anioEstaVivo);
 
-        // Obtener autores vivos en el año especificado
+        // FILTRO AUTORES POR AÑO
         List<Autor> autoresVivos = autorRepository.findByFechaNacimientoBeforeAndFechaFallecimientoAfterOrFechaFallecimientoIsNullAndFechaNacimientoIsNotNull(String.valueOf(anio), String.valueOf(anio));
 
-        // Filtrar autores con fechaNacimiento mayor a 100 años desde el año actual si fechaFallecimiento es null
+        // RESTRICCION DE RANGO
         int anioActual = Year.now().getValue();
 
         autoresVivos = autoresVivos.stream()
@@ -297,6 +291,7 @@ public class Principal {
             pausa();
         }
     }
+
     private void listarLibrosPorIdioma() {
         var menuIdiomas = """
                 LIBROS POR IDIOMA
@@ -321,7 +316,7 @@ public class Principal {
             }
         } while (!idiomaLibro.matches("^[a-z]{2}$"));
 
-        // Lista de libros en idioma buscado
+        // MOSTRAR LIBROS EN EL IDIOMA SELECCIONADO
         List<Libro> librosPorIdioma = libroRepository.findByIdiomasContaining(idiomaLibro);
 
         if (librosPorIdioma.isEmpty()) {
@@ -332,13 +327,13 @@ public class Principal {
         } else {
             if (librosPorIdioma.size() == 1) {
                 System.out.printf("""
-                        %d LIBRO EN EL IDIOMA '%s'
-                        -------------------------------------------------%n""",
+                                %d LIBRO EN EL IDIOMA '%s'
+                                -------------------------------------------------%n""",
                         librosPorIdioma.size(), idiomaLibro.toUpperCase());
             } else {
                 System.out.printf("""
-                        %d LIBROS EN EL IDIOMA '%s'
-                        --------------------------------------------------%n""",
+                                %d LIBROS EN EL IDIOMA '%s'
+                                --------------------------------------------------%n""",
                         librosPorIdioma.size(), idiomaLibro.toUpperCase());
             }
             mostrarLibros(librosPorIdioma);
@@ -352,7 +347,7 @@ public class Principal {
                     .map(autor -> new AutorDatos(autor.getId(), autor.getNombre(), autor.getFechaNacimiento(), autor.getFechaFallecimiento()))
                     .collect(Collectors.toList());
 
-            // Crear el DTO para mostrar solo la información necesaria
+            //FILTRO Y RESTRICCION DE INFORMACION
             LibroDatos libroDatos = new LibroDatos(
                     libro.getId(),
                     libro.getTitulo(),
@@ -364,10 +359,10 @@ public class Principal {
             System.out.printf(
                     """
                             -------------------TITULO-------------------
-                            Título: %s
-                            Autor: %s
-                            Idioma: %s
-                            N° Descargas: %.2f%n""", libroDatos.titulo(),
+                            TITULO: %s
+                            AAUTOR: %s
+                            IDIOMA: %s
+                            OTAL DESCARGAS: %.2f%n""", libroDatos.titulo(),
                     libroDatos.autores().stream().map(AutorDatos::nombre).collect(Collectors.joining(", ")),
                     String.join(", ", libro.getIdiomas()),
                     libroDatos.numeroDeDescargas()
@@ -390,15 +385,15 @@ public class Principal {
                     autor.getFechaFallecimiento()
             );
 
-            // Mostrar la información en el formato solicitado
+            //MOSTRAR INFORMACION
             System.out.printf(
                     """
                             AUTOR
                             ------------------------------------------------------
-                            Autor: %s
-                            Fecha de Nacimiento: %s
-                            Fecha de Fallecimiento: %s
-                            Libros: %s%n""", autorDatos.nombre(),
+                            AUTOR: %s
+                            FECHA DE NACIMIENTO: %s
+                            FECHA DE MUERTE: %s
+                            LIBROS DE SU AUTORIA: %s%n""", autorDatos.nombre(),
                     autorDatos.fechaNacimiento() != null ? autorDatos.fechaNacimiento() : "N/A",
                     autorDatos.fechaFallecimiento() != null ? autorDatos.fechaFallecimiento() : "N/A",
                     librosDelAutor
@@ -411,7 +406,7 @@ public class Principal {
         System.out.print("INGRESE EL NOMBRE DEL AUTOR A BUSCAR: ");
         var nombreAutor = sc.nextLine().toLowerCase();
 
-        // Realizar la búsqueda en la base de datos
+        //BUSQUEDA DB
         List<Autor> autoresBuscados = autorRepository.findByNombreContainingIgnoreCase(nombreAutor);
 
         System.out.printf("""
@@ -449,7 +444,7 @@ public class Principal {
                 continue;
             }
 
-            // Verificación de que el año de inicio sea menor o igual que el de fin
+            //RESTRICCION DE RANGO
             if (Integer.parseInt(anioInicio) > Integer.parseInt(anioFin)) {
                 System.out.println("""
                         POR FAVOR INGRESE UN RANGO CRONOLOGICAMENTE VALIDO
@@ -512,28 +507,28 @@ public class Principal {
         LocalDate fechaActual = LocalDate.now();
 
         DoubleSummaryStatistics estadisticasEdad = autorRepository.findAll().stream()
-                .filter(autor -> autor.getFechaNacimiento() != null) // filtro si tiene fecha de nacimiento
+                .filter(autor -> autor.getFechaNacimiento() != null)
                 .filter(autor -> {
-                    // Si el autor no tiene fecha de fallecimiento, calculamos su edad actual
+
                     if (autor.getFechaFallecimiento() == null) {
                         int anioNacimiento = Integer.parseInt(autor.getFechaNacimiento().substring(0, 4));
                         int anioActual = fechaActual.getYear();
                         int edad = anioActual - anioNacimiento;
                         return edad < 100;
                     }
-                    // incluimos autores con fecha fallecimiento
+
                     return true;
                 })
                 .mapToDouble(autor -> {
-                    // Obtenemos el año de nacimiento
+
                     int anioNacimiento = Integer.parseInt(autor.getFechaNacimiento().substring(0, 4));
 
-                    // Vemos si tiene fecha fallecimiento y calculamos la edad al fallecer
+
                     if (autor.getFechaFallecimiento() != null) {
                         int anioFallecimiento = Integer.parseInt(autor.getFechaFallecimiento().substring(0, 4));
                         return anioFallecimiento - anioNacimiento;
                     } else {
-                        // si no tiene fecha fallecimiento calculamos edad actual
+
                         int anioActual = fechaActual.getYear();
                         return anioActual - anioNacimiento;
                     }
@@ -550,7 +545,6 @@ public class Principal {
     }
 
     private boolean validarAnio4Digitos(String anio) {
-        // Validar que el año ingresado tenga 4 dígitos numéricos
         return anio.matches("\\d{4}");
     }
 
