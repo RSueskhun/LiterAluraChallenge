@@ -321,7 +321,7 @@ public class Principal {
 
         if (librosPorIdioma.isEmpty()) {
             System.out.println("""
-                    NO SE ENCONTRARON LIBROS EN EL IDIOMA SELECCIOANDO
+                    NO SE ENCONTRARON LIBROS EN EL IDIOMA SELECCIONADO
                     ----------------------------------------------------""");
             pausa();
         } else {
