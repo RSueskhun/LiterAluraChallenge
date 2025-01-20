@@ -64,11 +64,11 @@ Ejecuta el proyecto:
 
 1. Ejecuta la aplicación.
 
-2. Selecciona las monedas que deseas convertir.
+2. Selecciona las opciones en el menu de consola.
 
-3. Introduce la cantidad a convertir.
+3. Verifica una a una las funcionalidades de cada opción del menú.
 
-4. Visualiza el resultado de la conversión.
+4. Visualiza el resultado de cada una de las opciones en consola.
 
 
 ## Tecnologías Utilizadas
